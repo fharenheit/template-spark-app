@@ -11,7 +11,6 @@ import org.apache.commons.cli2.builder.GroupBuilder;
 import org.apache.commons.cli2.commandline.Parser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SparkSession;
 
 import java.io.Serializable;
@@ -101,6 +100,32 @@ public abstract class AbstractJob implements Serializable {
      */
     protected static void addOption(String name, String shortName, String description, String defaultValue) {
         options.add(buildOption(name, shortName, description, true, false, defaultValue));
+    }
+
+    /**
+     * Hadoop MapReduce에 옵션을 추가한다. 옵션 추가는 커맨드 라인을 통해서 가능하며
+     * 커맨드 라인은 {@link #parseArguments(String[])} 메소드를 호출하여 파싱하게 된다.
+     *
+     * @param name         파라미터명(예; <tt>inputPath</tt>)
+     * @param shortName    출약 파라미터명(예; <tt>i</tt>)
+     * @param description  파라미터에 대한 설명문
+     * @param defaultValue 커맨드 라인에서 입력 인자를 지정하지 않는 경우 설정할 기본값으로써 null을 허용한다.
+     */
+    protected static void addOption(String name, String shortName, String description, long defaultValue) {
+        options.add(buildOption(name, shortName, description, true, false, String.valueOf(defaultValue)));
+    }
+
+    /**
+     * Hadoop MapReduce에 옵션을 추가한다. 옵션 추가는 커맨드 라인을 통해서 가능하며
+     * 커맨드 라인은 {@link #parseArguments(String[])} 메소드를 호출하여 파싱하게 된다.
+     *
+     * @param name         파라미터명(예; <tt>inputPath</tt>)
+     * @param shortName    출약 파라미터명(예; <tt>i</tt>)
+     * @param description  파라미터에 대한 설명문
+     * @param defaultValue 커맨드 라인에서 입력 인자를 지정하지 않는 경우 설정할 기본값으로써 null을 허용한다.
+     */
+    protected static void addOption(String name, String shortName, String description, double defaultValue) {
+        options.add(buildOption(name, shortName, description, true, false, String.valueOf(defaultValue)));
     }
 
     /**

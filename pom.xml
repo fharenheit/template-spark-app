@@ -18,14 +18,25 @@
         <spark.csv.version>1.5.0</spark.csv.version>
         <scala.version>2.11.8</scala.version>
         <scala.binary.version>2.11</scala.binary.version>
-        <hadoop.version>2.7.2</hadoop.version>
+        <hadoop.version>2.7.1</hadoop.version>
         <scopt.version>3.5.0</scopt.version>
         <guava.version>21.0</guava.version>
         <mahout.cli.version>2.0-mahout</mahout.cli.version>
         <postgres.jdbc.version>42.0.0.jre7</postgres.jdbc.version>
+        <spring.hadoop.version>2.4.0.RELEASE</spring.hadoop.version>
     </properties>
 
     <dependencies>
+        <!-- =============== -->
+        <!--  Spring Hadoop  -->
+        <!-- =============== -->
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-hadoop</artifactId>
+            <version>${spring.hadoop.version}</version>
+        </dependency>
+
         <!-- ============== -->
         <!--  Google Guava  -->
         <!-- ============== -->
