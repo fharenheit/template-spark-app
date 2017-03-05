@@ -1,0 +1,35 @@
+{
+  "tables": [
+    {
+      "name": "DP_PRODUCTS"
+    }
+  ],
+  "selected": [
+    {
+      "column": "PRODUCT_CLASSIFICATION",
+      "function": "NVL( $VALUE, ' ')",
+      "as": "PRODUCT_CLASSIFICATION"
+    }
+  ],
+  "condition": [
+    {
+      "operator": "GROUP_BY",
+      "columns": [
+        "PRODUCT_CLASSIFICATION",
+        "PRODUCT_NM",
+        "BRAND_LINE",
+        "SIZE_CLASS",
+        "SIZE_CD",
+        "COLOR_NM",
+        "MATERIAL_NM",
+        "GENDER",
+        "TYPE_CLASS",
+        "TYPE_CD",
+        "QUANTITY_WITHIN_SET",
+        "PRODUCT_LIFE",
+        "PRODUCT_REFERENCE_NUM",
+        "BRAND_CD"
+      ]
+    }
+  ]
+}
