@@ -18,8 +18,7 @@
 // scalastyle:off println
 package org.apache.spark.examples.mllib
 
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
+import org.apache.spark.{SparkConf, SparkContext}
 // $example on$
 import org.apache.spark.mllib.feature.ElementwiseProduct
 import org.apache.spark.mllib.linalg.Vectors
@@ -27,30 +26,31 @@ import org.apache.spark.mllib.linalg.Vectors
 
 object ElementwiseProductExample {
 
-  def main(args: Array[String]): Unit = {
+    def main(args: Array[String]): Unit = {
 
-    val conf = new SparkConf().setAppName("ElementwiseProductExample")
-    val sc = new SparkContext(conf)
+        val conf = new SparkConf().setAppName("ElementwiseProductExample")
+        val sc = new SparkContext(conf)
 
-    // $example on$
-    // Create some vector data; also works for sparse vectors
-    val data = sc.parallelize(Array(Vectors.dense(1.0, 2.0, 3.0), Vectors.dense(4.0, 5.0, 6.0)))
+        // $example on$
+        // Create some vector data; also works for sparse vectors
+        val data = sc.parallelize(Array(Vectors.dense(1.0, 2.0, 3.0), Vectors.dense(4.0, 5.0, 6.0)))
 
-    val transformingVector = Vectors.dense(0.0, 1.0, 2.0)
-    val transformer = new ElementwiseProduct(transformingVector)
+        val transformingVector = Vectors.dense(0.0, 1.0, 2.0)
+        val transformer = new ElementwiseProduct(transformingVector)
 
-    // Batch transform and per-row transform give the same results:
-    val transformedData = transformer.transform(data)
-    val transformedData2 = data.map(x => transformer.transform(x))
-    // $example off$
+        // Batch transform and per-row transform give the same results:
+        val transformedData = transformer.transform(data)
+        val transformedData2 = data.map(x => transformer.transform(x))
+        // $example off$
 
-    println("transformedData: ")
-    transformedData.foreach(x => println(x))
+        println("transformedData: ")
+        transformedData.foreach(x => println(x))
 
-    println("transformedData2: ")
-    transformedData2.foreach(x => println(x))
+        println("transformedData2: ")
+        transformedData2.foreach(x => println(x))
 
-    sc.stop()
-  }
+        sc.stop()
+    }
 }
+
 // scalastyle:on println

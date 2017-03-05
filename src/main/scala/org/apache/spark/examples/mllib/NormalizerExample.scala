@@ -18,8 +18,7 @@
 // scalastyle:off println
 package org.apache.spark.examples.mllib
 
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
+import org.apache.spark.{SparkConf, SparkContext}
 // $example on$
 import org.apache.spark.mllib.feature.Normalizer
 import org.apache.spark.mllib.util.MLUtils
@@ -27,31 +26,32 @@ import org.apache.spark.mllib.util.MLUtils
 
 object NormalizerExample {
 
-  def main(args: Array[String]): Unit = {
+    def main(args: Array[String]): Unit = {
 
-    val conf = new SparkConf().setAppName("NormalizerExample")
-    val sc = new SparkContext(conf)
+        val conf = new SparkConf().setAppName("NormalizerExample")
+        val sc = new SparkContext(conf)
 
-    // $example on$
-    val data = MLUtils.loadLibSVMFile(sc, "data/mllib/sample_libsvm_data.txt")
+        // $example on$
+        val data = MLUtils.loadLibSVMFile(sc, "data/mllib/sample_libsvm_data.txt")
 
-    val normalizer1 = new Normalizer()
-    val normalizer2 = new Normalizer(p = Double.PositiveInfinity)
+        val normalizer1 = new Normalizer()
+        val normalizer2 = new Normalizer(p = Double.PositiveInfinity)
 
-    // Each sample in data1 will be normalized using $L^2$ norm.
-    val data1 = data.map(x => (x.label, normalizer1.transform(x.features)))
+        // Each sample in data1 will be normalized using $L^2$ norm.
+        val data1 = data.map(x => (x.label, normalizer1.transform(x.features)))
 
-    // Each sample in data2 will be normalized using $L^\infty$ norm.
-    val data2 = data.map(x => (x.label, normalizer2.transform(x.features)))
-    // $example off$
+        // Each sample in data2 will be normalized using $L^\infty$ norm.
+        val data2 = data.map(x => (x.label, normalizer2.transform(x.features)))
+        // $example off$
 
-    println("data1: ")
-    data1.foreach(x => println(x))
+        println("data1: ")
+        data1.foreach(x => println(x))
 
-    println("data2: ")
-    data2.foreach(x => println(x))
+        println("data2: ")
+        data2.foreach(x => println(x))
 
-    sc.stop()
-  }
+        sc.stop()
+    }
 }
+
 // scalastyle:on println

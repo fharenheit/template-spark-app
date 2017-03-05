@@ -24,32 +24,33 @@ import org.apache.spark.ml.feature.Bucketizer
 import org.apache.spark.sql.SparkSession
 
 object BucketizerExample {
-  def main(args: Array[String]): Unit = {
-    val spark = SparkSession
-      .builder
-      .appName("BucketizerExample")
-      .getOrCreate()
+    def main(args: Array[String]): Unit = {
+        val spark = SparkSession
+            .builder
+            .appName("BucketizerExample")
+            .getOrCreate()
 
-    // $example on$
-    val splits = Array(Double.NegativeInfinity, -0.5, 0.0, 0.5, Double.PositiveInfinity)
+        // $example on$
+        val splits = Array(Double.NegativeInfinity, -0.5, 0.0, 0.5, Double.PositiveInfinity)
 
-    val data = Array(-999.9, -0.5, -0.3, 0.0, 0.2, 999.9)
-    val dataFrame = spark.createDataFrame(data.map(Tuple1.apply)).toDF("features")
+        val data = Array(-999.9, -0.5, -0.3, 0.0, 0.2, 999.9)
+        val dataFrame = spark.createDataFrame(data.map(Tuple1.apply)).toDF("features")
 
-    val bucketizer = new Bucketizer()
-      .setInputCol("features")
-      .setOutputCol("bucketedFeatures")
-      .setSplits(splits)
+        val bucketizer = new Bucketizer()
+            .setInputCol("features")
+            .setOutputCol("bucketedFeatures")
+            .setSplits(splits)
 
-    // Transform original data into its bucket index.
-    val bucketedData = bucketizer.transform(dataFrame)
+        // Transform original data into its bucket index.
+        val bucketedData = bucketizer.transform(dataFrame)
 
-    println(s"Bucketizer output with ${bucketizer.getSplits.length-1} buckets")
-    bucketedData.show()
-    // $example off$
+        println(s"Bucketizer output with ${bucketizer.getSplits.length - 1} buckets")
+        bucketedData.show()
+        // $example off$
 
-    spark.stop()
-  }
+        spark.stop()
+    }
 }
+
 // scalastyle:on println
 

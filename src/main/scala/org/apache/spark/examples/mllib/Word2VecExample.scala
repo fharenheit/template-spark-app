@@ -18,38 +18,38 @@
 // scalastyle:off println
 package org.apache.spark.examples.mllib
 
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
+import org.apache.spark.{SparkConf, SparkContext}
 // $example on$
 import org.apache.spark.mllib.feature.{Word2Vec, Word2VecModel}
 // $example off$
 
 object Word2VecExample {
 
-  def main(args: Array[String]): Unit = {
+    def main(args: Array[String]): Unit = {
 
-    val conf = new SparkConf().setAppName("Word2VecExample")
-    val sc = new SparkContext(conf)
+        val conf = new SparkConf().setAppName("Word2VecExample")
+        val sc = new SparkContext(conf)
 
-    // $example on$
-    val input = sc.textFile("data/mllib/sample_lda_data.txt").map(line => line.split(" ").toSeq)
+        // $example on$
+        val input = sc.textFile("data/mllib/sample_lda_data.txt").map(line => line.split(" ").toSeq)
 
-    val word2vec = new Word2Vec()
+        val word2vec = new Word2Vec()
 
-    val model = word2vec.fit(input)
+        val model = word2vec.fit(input)
 
-    val synonyms = model.findSynonyms("1", 5)
+        val synonyms = model.findSynonyms("1", 5)
 
-    for((synonym, cosineSimilarity) <- synonyms) {
-      println(s"$synonym $cosineSimilarity")
+        for ((synonym, cosineSimilarity) <- synonyms) {
+            println(s"$synonym $cosineSimilarity")
+        }
+
+        // Save and load model
+        model.save(sc, "myModelPath")
+        val sameModel = Word2VecModel.load(sc, "myModelPath")
+        // $example off$
+
+        sc.stop()
     }
-
-    // Save and load model
-    model.save(sc, "myModelPath")
-    val sameModel = Word2VecModel.load(sc, "myModelPath")
-    // $example off$
-
-    sc.stop()
-  }
 }
+
 // scalastyle:on println
