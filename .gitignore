@@ -19,3 +19,12 @@ hs_err_pid*
 # Maven #
 target
 target/
+
+# Mac #
+.DS_Store
+
+# ExtJS #
+bootstrap.json
+bootstrap.js
+bootstrap.cs
+build
