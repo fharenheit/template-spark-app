@@ -18,6 +18,7 @@
 // scalastyle:off println
 package org.apache.spark.examples.ml
 
+import org.apache.spark.examples.mllib.AbstractParams
 import org.apache.spark.ml.classification.{DecisionTreeClassificationModel, DecisionTreeClassifier}
 import org.apache.spark.ml.feature.{StringIndexer, VectorIndexer}
 import org.apache.spark.ml.linalg.Vector

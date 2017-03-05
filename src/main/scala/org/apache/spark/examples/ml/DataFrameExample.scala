@@ -20,6 +20,7 @@ package org.apache.spark.examples.ml
 
 import java.io.File
 
+import org.apache.spark.examples.mllib.AbstractParams
 import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.stat.MultivariateOnlineSummarizer

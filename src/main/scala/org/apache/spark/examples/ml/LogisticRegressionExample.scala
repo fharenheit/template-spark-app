@@ -18,6 +18,7 @@
 // scalastyle:off println
 package org.apache.spark.examples.ml
 
+import org.apache.spark.examples.mllib.AbstractParams
 import org.apache.spark.ml.classification.{LogisticRegression, LogisticRegressionModel}
 import org.apache.spark.ml.feature.StringIndexer
 import org.apache.spark.ml.{Pipeline, PipelineStage}
