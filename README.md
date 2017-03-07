@@ -12,3 +12,30 @@ Spark Application Template 소개
 ~~~
 # mvn clean package
 ~~~
+
+Custom Data Type
+------------
+
+~~~
+public class University implements Serializable {
+    private String name;
+    private long numStudents;
+    private long yearFounded;
+
+    public void setName(String name) {...}
+    public String getName() {...}
+    public void setNumStudents(long numStudents) {...}
+    public long getNumStudents() {...}
+    public void setYearFounded(long yearFounded) {...}
+    public long getYearFounded() {...}
+}
+
+class BuildString implements MapFunction {
+    public String call(University u) throws Exception {
+        return u.getName() + " is " + (2015 - u.getYearFounded()) + " years old.";
+    }
+}
+
+Dataset schools = context.read().json("/schools.json").as(Encoders.bean(University.class));
+Dataset strings = schools.map(new BuildString(), Encoders.STRING());
+~~~

@@ -205,11 +205,13 @@
         <!--  Spark CSV  -->
         <!-- =========== -->
 
+<!--
         <dependency>
             <groupId>com.databricks</groupId>
             <artifactId>spark-csv_2.11</artifactId>
             <version>${spark.csv.version}</version>
         </dependency>
+-->
 
         <!-- =================== -->
         <!--  Scala CLI Options  -->
