@@ -63,7 +63,7 @@ public final class JavaProduct2Driver extends AbstractJob {
             }
         };
 
-        // 인자가 1개 있는 UDF를 구현한다.
+        // 인자가 2개 있는 UDF를 구현한다.
         UDF2 isNotAllowChar = new UDF2<String, String, Boolean>() {
             @Override
             public Boolean call(String srcValue, String checkChar) throws Exception {
