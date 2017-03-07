@@ -15,7 +15,7 @@ public class SparkUtils {
     public static SparkSession getSparkSession(String appName, String master, boolean enableHiveSupport, SparkConf conf, Map<String, Object> confs) {
         SparkSession.Builder builder = SparkSession.builder();
         if (!StringUtils.isEmpty(appName)) builder.appName(appName);
-        if (!StringUtils.isEmpty(master)) builder.master(master);
+        if (!StringUtils.isEmpty(master)) builder.master(master); // YARN or Spark Master
         if (enableHiveSupport) builder.enableHiveSupport();
         if (conf != null) builder.config(conf);
         if (confs != null) {

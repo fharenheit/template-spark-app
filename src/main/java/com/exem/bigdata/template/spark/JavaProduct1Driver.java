@@ -18,13 +18,13 @@ import java.util.Map;
 
 import static com.exem.bigdata.template.spark.util.Constants.APP_FAIL;
 
-public final class JavaSparkProduct1 extends AbstractJob {
+public final class JavaProduct1Driver extends AbstractJob {
 
     private Map<String, String> params;
 
     @Override
     protected SparkSession setup(String[] args) throws Exception {
-        addOption("appName", "n", "Spark Application", "Spark Application (" + DateUtils.getCurrentDateTime() + ")");
+         addOption("appName", "n", "Spark Application", "Spark Application (" + DateUtils.getCurrentDateTime() + ")");
 
         params = parseArguments(args);
         if (params == null || params.size() == 0) {
@@ -37,6 +37,8 @@ public final class JavaSparkProduct1 extends AbstractJob {
     protected void processing(SparkSession sparkSession) throws Exception {
         JavaSparkContext jsc = new JavaSparkContext(sparkSession.sparkContext());
         JavaRDD<String> stringRDD = jsc.textFile("product.txt").persist(StorageLevel.MEMORY_AND_DISK());
+
+        System.out.println(stringRDD.count());
 
         // CSV 파일을 로딩하여 Product1 RDD를 생성한다.
         JavaRDD<Product1> products = stringRDD.map(new Function<String, Product1>() {
@@ -60,7 +62,7 @@ public final class JavaSparkProduct1 extends AbstractJob {
         JavaPairRDD<String, Iterable<Product1>> pairRDD = products.groupBy(new Function<Product1, String>() {
             @Override
             public String call(Product1 product) throws Exception {
-                return product.GROUPED_KEY;
+                return product.GROUPED_KEY; // GROUP BY용 컬럼명
             }
         });
 
@@ -76,14 +78,14 @@ public final class JavaSparkProduct1 extends AbstractJob {
                 while (iterator.hasNext()) {
                     Product1 product = iterator.next();
                     // 여기는 확장되어야 한다.
-                    if (product.GROUPED_KEY.equals("101112")) list.add(product);
+                    if (product.GROUPED_KEY.equals("SEOUL")) list.add(product);
                 }
                 return list;
             }
         });
 
         // Group By한 데이터에서 건수가 0인것을 제외하고 모두 합친다.
-        List<List<Product1>> collected = stringListJavaPairRDD.values().collect();
+        List<List<Product1>> collected = stringListJavaPairRDD.values().collect(); // Worker to Driver
         List<Product1> finalProducts = new ArrayList();
         for (List<Product1> p : collected) {
             if (p.size() > 0) {
@@ -94,7 +96,7 @@ public final class JavaSparkProduct1 extends AbstractJob {
     }
 
     public static void main(String[] args) throws Exception {
-        new JavaSparkProduct1().run(args);
+        new JavaProduct1Driver().run(args);
     }
 
 }
