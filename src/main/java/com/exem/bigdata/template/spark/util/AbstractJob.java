@@ -21,7 +21,7 @@ public abstract class AbstractJob implements Serializable {
     /**
      * MapReduce Job을 동작시키기 위한 파라미터의 Key Value Map.
      */
-    private static Map<String, String> argMap;
+    public static Map<String, String> argMap;
 
     /**
      * 내부적으로 사용하기 위한 옵션 목록.
@@ -163,7 +163,7 @@ public abstract class AbstractJob implements Serializable {
                                      boolean required,
                                      String defaultValue) {
         DefaultOptionBuilder optBuilder = new DefaultOptionBuilder().withLongName(name).withDescription(description)
-                .withRequired(required);
+            .withRequired(required);
         if (shortName != null) {
             optBuilder.withShortName(shortName);
         }
@@ -350,9 +350,25 @@ public abstract class AbstractJob implements Serializable {
                 // nulls are ok, for cases where options are simple flags.
                 Object vo = cmdLine.getValue(o);
                 String value = vo == null ? null : vo.toString();
-                args.put(o.getPreferredName(), value);
+                args.put(getParamName(o.getPreferredName()), value);
             }
         }
+    }
+
+    /**
+     * 파라미터 명에 -- 또는 -가 포함되어 있는 경우 -- 또는 -을 삭제한 파라미터명을 반환한다.
+     *
+     * @param value -- 또는 -로 시작하는 파라미터 명
+     * @return -- 또는 -를 삭제한 파라미터 명
+     */
+    private static String getParamName(String value) {
+        if (value.startsWith("--")) {
+            return StringUtils.substringAfter(value, "--");
+        }
+        if (value.startsWith("-")) {
+            return StringUtils.substringAfter(value, "-");
+        }
+        return value;
     }
 
     /**
@@ -368,9 +384,28 @@ public abstract class AbstractJob implements Serializable {
         return keyFor(key) + " " + value;
     }
 
+    /**
+     * Spark Application 명으로 {@link SparkConf}를 반환한다.
+     *
+     * @param appName Spark Application 명
+     * @return {@link SparkConf}
+     */
     public static SparkConf getSparkConf(String appName) {
         sparkConf = new SparkConf();
         sparkConf.setAppName(appName);
         return sparkConf;
+    }
+
+    /**
+     * 사용자가 입력한 커맨드 라인 파라미터에서 파라미터 명으로 파라미터 값을 반환한다.
+     *
+     * @param paramName 파라미터 명
+     * @return 파라미터 값
+     */
+    public String getParamValue(String paramName) {
+        if (StringUtils.isEmpty(argMap.get(paramName))) {
+            throw new RuntimeException("Does not exists. Parameter Name : '" + paramName + "'");
+        }
+        return argMap.get(paramName);
     }
 }

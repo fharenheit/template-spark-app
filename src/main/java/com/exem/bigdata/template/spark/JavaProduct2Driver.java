@@ -16,7 +16,6 @@ import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.Metadata;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Map;
 
@@ -26,17 +25,15 @@ import static org.apache.spark.sql.functions.first;
 
 public final class JavaProduct2Driver extends AbstractJob {
 
-    private Map<String, String> params;
-
     @Override
     protected SparkSession setup(String[] args) throws Exception {
         addOption("appName", "n", "Spark Application", "Spark Application (" + DateUtils.getCurrentDateTime() + ")");
 
-        params = parseArguments(args);
-        if (params == null || params.size() == 0) {
+        Map<String, String> argsMap = parseArguments(args);
+        if (argsMap == null || argsMap.size() == 0) {
             System.exit(APP_FAIL);
         }
-        return SparkUtils.getSparkSessionForLocal(params.get("--appName"));
+        return SparkUtils.getSparkSessionForLocal(getParamValue("appName"));
     }
 
     @Override
@@ -45,10 +42,10 @@ public final class JavaProduct2Driver extends AbstractJob {
 
         // 스키마를 정의한다. 메타데이터 테이블에서 정보를 읽어와서 처리할 수 있다.
         StructType schema = new StructType(new StructField[]{
-                new StructField("PRODUCT_CLASSIFICATION", DataTypeUtils.getDataType("STRING"), true, Metadata.empty()),
-                new StructField("PRODUCT_NM", DataTypes.StringType, true, Metadata.empty()),
-                new StructField("BRAND_LINE", DataTypes.StringType, true, Metadata.empty()),
-                new StructField("USE_YN", DataTypes.StringType, true, Metadata.empty())
+            new StructField("PRODUCT_CLASSIFICATION", DataTypeUtils.getDataType("STRING"), true, Metadata.empty()),
+            new StructField("PRODUCT_NM", DataTypes.StringType, true, Metadata.empty()),
+            new StructField("BRAND_LINE", DataTypes.StringType, true, Metadata.empty()),
+            new StructField("USE_YN", DataTypes.StringType, true, Metadata.empty())
         });
 
         // 인자가 1개 있는 UDF를 구현한다.
@@ -84,10 +81,10 @@ public final class JavaProduct2Driver extends AbstractJob {
 
         // 파일을 로딩한다.
         Dataset ds = sparkSession.read()
-                .option("header", "false")
-                .option("delimiter", ",")
-                .schema(schema)
-                .csv("product.txt");
+            .option("header", "false")
+            .option("delimiter", ",")
+            .schema(schema)
+            .csv("product.txt");
 /*
                 .as(Encoders.bean(Product2.class));
 */
@@ -102,9 +99,9 @@ public final class JavaProduct2Driver extends AbstractJob {
 
         Dataset<Row> count = grouped.count();
         Dataset<Row> agg = grouped.agg(
-                count("*").as("COUNT"),
-                first("PRODUCT_NM").as("PRODUCT_NM"),
-                first("BRAND_LINE").as("BRAND_LINE")
+            count("*").as("COUNT"),
+            first("PRODUCT_NM").as("PRODUCT_NM"),
+            first("BRAND_LINE").as("BRAND_LINE")
         ).filter("COUNT > 1");
 
 //        count.join(agg).show();

@@ -20,17 +20,15 @@ import static com.exem.bigdata.template.spark.util.Constants.APP_FAIL;
 
 public final class JavaProduct1Driver extends AbstractJob {
 
-    private Map<String, String> params;
-
     @Override
     protected SparkSession setup(String[] args) throws Exception {
-         addOption("appName", "n", "Spark Application", "Spark Application (" + DateUtils.getCurrentDateTime() + ")");
+        addOption("appName", "n", "Spark Application", "Spark Application (" + DateUtils.getCurrentDateTime() + ")");
 
-        params = parseArguments(args);
-        if (params == null || params.size() == 0) {
+        Map<String, String> argsMap = parseArguments(args);
+        if (argsMap == null || argsMap.size() == 0) {
             System.exit(APP_FAIL);
         }
-        return SparkUtils.getSparkSessionForLocal(params.get("--appName"));
+        return SparkUtils.getSparkSessionForLocal(getParamValue("appName"));
     }
 
     @Override
