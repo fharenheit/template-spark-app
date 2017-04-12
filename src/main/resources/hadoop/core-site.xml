@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+    <property>
+        <name>hadoop.common.configuration.version</name>
+        <value>0.23.0</value>
+        <description>version of this configuration file</description>
+    </property>
+
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/tmp/hadoop-${user.name}</value>
+        <description>A base for other temporary directories.</description>
+    </property>
+
+    <property>
+        <name>io.native.lib.available</name>
+        <value>true</value>
+        <description>Controls whether to use native libraries for bz2 and zlib
+            compression codecs or not. The property does not control any other native
+            libraries.
+        </description>
+    </property>
+
+</configuration>

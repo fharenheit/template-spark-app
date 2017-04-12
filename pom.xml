@@ -39,6 +39,21 @@
             <artifactId>spring-data-hadoop</artifactId>
             <version>${spring.hadoop.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-hadoop-batch</artifactId>
+            <version>${spring.hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-hadoop-test</artifactId>
+            <version>${spring.hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-yarn-test</artifactId>
+            <version>${spring.hadoop.version}</version>
+        </dependency>
 
         <!-- ====================== -->
         <!--  MyBatis Dependencies  -->
@@ -69,11 +84,13 @@
         <!--  Google Guava  -->
         <!-- ============== -->
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
+        <!-- spring hadoop
+                <dependency>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                    <version>${guava.version}</version>
+                </dependency>
+        -->
 
         <!-- ============ -->
         <!--  Mahout CLI  -->

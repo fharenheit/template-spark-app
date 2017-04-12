@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hdp="http://www.springframework.org/schema/hadoop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <hdp:configuration id="conf" resources="classpath:/hadoop/core-site.xml"/>
+
+    <hdp:resource-loader id="loader" configuration-ref="conf"/>
+
+    <hdp:file-system id="fs" uri="hdfs://localhost:8080" configuration-ref="conf"/>
+
+    <bean id="hadoopCluster" class="org.springframework.data.hadoop.test.support.HadoopClusterFactoryBean">
+        <property name="clusterId" value="HadoopClusterTests"/>
+        <property name="autoStart" value="true"/>
+        <property name="nodes" value="1"/>
+    </bean>
+
+    <bean id="yarnCluster" class="org.springframework.yarn.test.support.YarnClusterFactoryBean">
+        <property name="clusterId" value="YarnClusterTests"/>
+        <property name="autoStart" value="true"/>
+        <property name="nodes" value="1"/>
+    </bean>
+
+    <bean id="hadoopConfiguredConfiguration"
+          class="org.springframework.data.hadoop.test.support.ConfigurationDelegatingFactoryBean">
+        <property name="cluster" ref="hadoopCluster"/>
+    </bean>
+
+    <hdp:configuration id="hadoopConfiguration" configuration-ref="hadoopConfiguredConfiguration"/>
+
+</beans>
