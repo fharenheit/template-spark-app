@@ -234,17 +234,18 @@ import java.util.Map;
 
 public class DummyRepository extends PersistentRepositoryImpl {
 
-    public static final String NAMESPACE = DummyRepository.class.getName();
+    public static final String NAMESPACE = DummyRepository.class.getName(); // 반드시 정의합니다.
 
-    public String getNamespace() {
+    public String getNamespace() { // 반드시 정의합니다.
         return this.NAMESPACE;
     }
 
-    public DummyRepository(SqlSessionTemplate template) {
+    public DummyRepository(SqlSessionTemplate template) { // MyBATIS를 사용하기 위해서 Spring에서 Constructor Injection을 하기 위해서 반드시 정의합니다.
         super.setSqlSessionTemplate(template);
     }
 
     public List<Map> select() {
+        // /src/main/resources/mybatis/dummy-mapper.xml 파일에 정의한 select 쿼리를 호출합니다.
         return this.getSqlSessionTemplate().selectList(this.getNamespace() + ".select");
     }
 
@@ -256,8 +257,13 @@ public class DummyRepository extends PersistentRepositoryImpl {
 다음의 코드를 통해 Spring Framework를 초기화 하고 MyBATIS로 동작하는 Repository를 호출할 수 있습니다.
 
 ```java
+// Spring Framework를 초기화 합니다.
 ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:/spring/*.xml");
+
+// 데이터베이스 쿼리를 실행하기 위해서 MyBATIS로 구현한 Repository를 Spring IoC Container에서 꺼냅니다.
 DummyRepository repo = ctx.getBean(DummyRepository.class);
+
+// Select 쿼리를 호출합니다.
 List<Map> selected = repo.select();
 ```
 
