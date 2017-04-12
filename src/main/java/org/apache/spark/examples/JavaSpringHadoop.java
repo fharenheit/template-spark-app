@@ -10,7 +10,7 @@ import java.util.Map;
 public class JavaSpringHadoop {
 
     public static void main(String[] args) {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:/hadoop/applicationContext*.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:/hadoop/applicationContext-mini.xml");
     }
 
 }
