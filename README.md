@@ -11,10 +11,113 @@
 # mvn clean package
 ```
 
-### Spring Hadoop 지원
+### Spring Data Hadoop 지원
+
+Spring Data Hadoop을 통해 몇 가지 작업을 간편하게 사용할 수 있으므로 Maven POM인 `pom.xml` 파일에 다음을 추가합니다.
+
+```xml
+<!-- =============== -->
+<!--  Spring Hadoop  -->
+<!-- =============== -->
+
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-hadoop</artifactId>
+    <version>${spring.hadoop.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-hadoop-batch</artifactId>
+    <version>${spring.hadoop.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-hadoop-test</artifactId>
+    <version>${spring.hadoop.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-yarn-test</artifactId>
+    <version>${spring.hadoop.version}</version>
+</dependency>
+```
+
+Hadoop의 주요 설정 파일인 `*-site.xml` 파일의 위치는 어디에 있어도 상관없으나 본 예제에서는 `/src/main/resources/hadoop/core-site.xml` 파일을 사용하도록 하였습니다.
+
+```xml
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+    <property>
+        <name>hadoop.common.configuration.version</name>
+        <value>0.23.0</value>
+        <description>version of this configuration file</description>
+    </property>
+
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/tmp/hadoop-${user.name}</value>
+        <description>A base for other temporary directories.</description>
+    </property>
+
+    <property>
+        <name>io.native.lib.available</name>
+        <value>true</value>
+        <description>Controls whether to use native libraries for bz2 and zlib
+            compression codecs or not. The property does not control any other native
+            libraries.
+        </description>
+    </property>
+
+</configuration>
+```
+
+Spring Data Hadoop을 이용하여 Hadoop Configuration 및 FileSystem을 초기화 하기 위해서 다음과 같이 Spring XML 파일(`/src/main/resources/hadoop/applicationContext-hadoop.xml`)을 작성할 수 있습니다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hdp="http://www.springframework.org/schema/hadoop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <hdp:configuration id="conf" resources="classpath:/hadoop/core-site.xml"/>
+
+    <hdp:resource-loader id="loader" configuration-ref="conf"/>
+
+    <hdp:file-system id="fs" uri="hdfs://localhost:8080" configuration-ref="conf"/>
+
+</beans>
+
+```
+
+통합 테스트를 위해서 YARN 기반 Mini Cluster를 생성하기 위해서 다음과 같이 Spring XML 파일(`/src/main/resources/hadoop/applicationContext-mini.xml`)을 작성할 수 있습니다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hdp="http://www.springframework.org/schema/hadoop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <hdp:configuration id="conf" resources="classpath:/hadoop/core-site.xml"/>
+
+    <hdp:resource-loader id="loader" configuration-ref="conf"/>
+
+    <hdp:file-system id="fs" uri="hdfs://localhost:8080" configuration-ref="conf"/>
+
+    <bean id="cluster" class="org.springframework.yarn.test.support.YarnClusterFactoryBean">
+        <property name="clusterId" value="YarnClusterTests"/>
+        <property name="autoStart" value="true"/>
+        <property name="nodes" value="1"/>
+    </bean>
+</beans>
+```
 
 
-### MyBATIS 지원
+### Spring Framework + MyBATIS 지원
 
 Spark Application이 실행하는데 있어서 JDBC 연결이 필요한 경우 MyBATIS를 사용해야할 수 있습니다. 본 예제에는 Spring + MyBATIS를 포함한 예제를 담고 있습니다.
 
