@@ -93,6 +93,11 @@ public final class JavaProduct1Driver extends AbstractJob {
         System.out.println(finalProducts);
     }
 
+    @Override
+    protected void cleanup(SparkSession session) throws Exception {
+
+    }
+
     public static void main(String[] args) throws Exception {
         new JavaProduct1Driver().run(args);
     }

@@ -11,6 +11,72 @@
 # mvn clean package
 ```
 
+### 간단한 Spark Application 작성하기
+
+본 예제는 Spark Job을 실행할 때 커맨드 라인 옵션을 지정할 수 있는 기능을 제공하는 `AbstractJob` 클래스를 제공합니다. 따라서 이러한 기능을 사용하기 위해서는 다음과 같이 Spark Driver 개발시 아래와 같이 상속하도록 합니다.
+
+```java
+import com.exem.bigdata.template.spark.util.AbstractJob;
+import com.exem.bigdata.template.spark.util.DateUtils;
+import com.exem.bigdata.template.spark.util.SparkUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.sql.SparkSession;
+import org.apache.spark.storage.StorageLevel;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static com.exem.bigdata.template.spark.util.Constants.APP_FAIL;
+
+public final class JavaSparkDriver extends AbstractJob {
+
+    @Override
+    protected SparkSession setup(String[] args) throws Exception {
+        // 커맨드 라인 옵션을 추가합니다. (--appName 또는 -n)
+        addOption("appName", "n", "Spark Application", "Spark Application (" + DateUtils.getCurrentDateTime() + ")");
+
+        // 사용자가 입력한 커맨드 라인을 Map으로 꺼내옵니다. 
+        Map<String, String> argsMap = parseArguments(args);
+        if (argsMap == null || argsMap.size() == 0) {
+            System.exit(APP_FAIL);
+        }
+        
+        // 커맨드 라인으로 입력한 --appName 파라미터로 Spark Session을 생성합니다.
+        return SparkUtils.getSparkSessionForLocal(getParamValue("appName")); // Local Spark Job
+    }
+
+    @Override
+    protected void processing(SparkSession sparkSession) throws Exception {
+        // 실제 작업을 실행하기 위해서 Spark Context를 생성하고 텍스트 파일을 로딩하여 RDD를 생성합니다.
+        JavaSparkContext jsc = new JavaSparkContext(sparkSession.sparkContext());
+        JavaRDD<String> stringRDD = jsc.textFile("product.txt").persist(StorageLevel.MEMORY_AND_DISK());
+
+        System.out.println(stringRDD.count());
+
+        ... 생략
+    }
+
+    @Override
+    protected void cleanup(SparkSession session) throws Exception {
+        // 기타 setup() 메소드 등에서 open한 지원을 Close합니다. Spark Session은 AbstractJob에서 자동으로 Close합니다.
+        
+        ... 생략
+    }
+
+    public static void main(String[] args) throws Exception {
+        new JavaSparkDriver().run(args);
+    }
+
+}
+
+```
+
 ### Spring Data Hadoop 지원
 
 Spring Data Hadoop을 통해 몇 가지 작업을 간편하게 사용할 수 있으므로 Maven POM인 `pom.xml` 파일에 다음을 추가합니다.
