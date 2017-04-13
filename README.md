@@ -11,6 +11,84 @@
 # mvn clean package
 ```
 
+### Scala 기반 Spark Application 컴파일
+
+본 예제는 Maven에 이미 Scala로 작성한 코드를 컴파일 할 수 있도록 Maven Plugin이 구성되어 있습니다. `pom.xml` 파일의 플러그인 정의에는 다음과 같이 `scala-maven-plugin`이 정의되어 있습니다.
+
+이 플러그인은 `/src/main/scala` 디렉토리에 있는 Scala 기반 코드를 먼저 컴파일한 후 `/src/main/java` 디렉토리에 있는 Java 기반 코드를 컴파일합니다.
+
+```xml
+<plugin>
+    <groupId>net.alchim31.maven</groupId>
+    <artifactId>scala-maven-plugin</artifactId>
+    <version>3.2.2</version>
+    <executions>
+        <execution>
+            <id>eclipse-add-source</id>
+            <goals>
+                <goal>add-source</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>scala-compile-first</id>
+            <phase>process-resources</phase>
+            <goals>
+                <goal>add-source</goal>
+                <goal>compile</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>scala-test-compile-first</id>
+            <phase>process-test-resources</phase>
+            <goals>
+                <goal>testCompile</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>attach-scaladocs</id>
+            <phase>verify</phase>
+            <goals>
+                <goal>doc-jar</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <scalaVersion>${scala.version}</scalaVersion>
+        <recompileMode>incremental</recompileMode>
+        <useZincServer>false</useZincServer>
+        <args>
+            <arg>-unchecked</arg>
+            <arg>-deprecation</arg>
+            <arg>-feature</arg>
+        </args>
+        <jvmArgs>
+            <jvmArg>-Xms1024m</jvmArg>
+            <jvmArg>-Xmx1024m</jvmArg>
+            <jvmArg>-XX:PermSize=256M</jvmArg>
+            <jvmArg>-XX:MaxPermSize=256M</jvmArg>
+            <jvmArg>-XX:ReservedCodeCacheSize=128M</jvmArg>
+        </jvmArgs>
+        <javacArgs>
+            <javacArg>-source</javacArg>
+            <javacArg>${java.version}</javacArg>
+            <javacArg>-target</javacArg>
+            <javacArg>${java.version}</javacArg>
+        </javacArgs>
+    </configuration>
+</plugin>
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.3</version>
+    <configuration>
+        <source>${java.version}</source>
+        <target>${java.version}</target>
+        <encoding>UTF-8</encoding>
+        <maxmem>1024m</maxmem>
+    </configuration>
+</plugin>
+```
+
 ### 간단한 Spark Application 작성하기
 
 본 예제는 Spark Job을 실행할 때 커맨드 라인 옵션을 지정할 수 있는 기능을 제공하는 `AbstractJob` 클래스를 제공합니다. 따라서 이러한 기능을 사용하기 위해서는 다음과 같이 Spark Driver 개발시 아래와 같이 상속하도록 합니다.
