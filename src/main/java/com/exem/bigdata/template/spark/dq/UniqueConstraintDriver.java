@@ -69,6 +69,7 @@ public class UniqueConstraintDriver extends AbstractJob {
                 .csv("product.txt");
 
         JavaRDD rdd = ds.toJavaRDD();
+        rdd.cache();
 
         List list = uniqueConstraint(rdd, constraints);
 
